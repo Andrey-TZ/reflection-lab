@@ -1,14 +1,18 @@
 package org.example.classes;
 
+import org.example.generator.Generatable;
+
+@Generatable
 public class Product {
     private String name;
     private double price;
 
+    @Generatable
     public Product(String name, double price) {
         this.name = name;
         this.price = price;
     }
-
+    @Generatable(primalConstructor = true)
     public Product(String name) {
         this.name = name;
         this.price = Double.MIN_VALUE;
