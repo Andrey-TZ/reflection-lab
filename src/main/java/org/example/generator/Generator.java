@@ -267,11 +267,11 @@ public class Generator {
             for (Field field : current.getDeclaredFields()) {
                 int mods = field.getModifiers();
                 if (Modifier.isStatic(mods) || Modifier.isFinal(mods)) continue;
-                field.setAccessible(true);
-                if (field.get(instance) != null) continue;
 
+                field.setAccessible(true);
                 Generatable fieldMeta = field.getAnnotation(Generatable.class);
                 if (fieldMeta != null && fieldMeta.ignore()) continue;
+                if (fieldMeta == null && field.get(instance) != null) continue;
 
                 Object value = generateByType(field.getType(), ctx.nextDepth(fieldMeta));
                 field.set(instance, value);
