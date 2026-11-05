@@ -1,9 +1,10 @@
-import org.example.classes.BinaryTreeNode;
-import org.example.classes.Product;
+import org.example.classes.*;
 import org.example.generator.Generator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class GeneratorTest {
@@ -49,6 +50,34 @@ public class GeneratorTest {
     void product_PrimalConstructor() {
         Product generated = Generator.generate(Product.class);
         Assertions.assertEquals(Double.MIN_VALUE, generated.getPrice());
+    }
+
+    @Test
+    void cart() {
+        Cart cart = Generator.generate(Cart.class);
+        Assertions.assertEquals(5, cart.getItems().size());
+    }
+
+    @Test
+    void shape() {
+        Shape generated = Generator.generate(Shape.class);
+        Assertions.assertTrue(Proxy.isProxyClass(generated.getClass()));
+        InvocationHandler handler = Proxy.getInvocationHandler(generated);
+        Assertions.assertNotNull(handler);
+
+        double area = generated.getArea();
+        double perimeter = generated.getPerimeter();
+        Assertions.assertTrue(area > 0);
+        Assertions.assertTrue(perimeter > 0);
+
+        Assertions.assertEquals(area, generated.getArea());
+        Assertions.assertEquals(perimeter, generated.getPerimeter());
+    }
+
+    @Test
+    void shapeWithImplementations() {
+        ShapeNew generated = Generator.generate(ShapeNew.class);
+        Assertions.assertInstanceOf(Triangle.class, generated);
     }
 
 }

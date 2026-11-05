@@ -60,7 +60,7 @@ public class Generator {
         }
 
         if (type instanceof ParameterizedType parameterizedType) {
-            Class<?> rawClass = parameterizedType.getClass();
+            Class<?> rawClass = (Class<?>) parameterizedType.getRawType();
             Type[] argumentsTypes = parameterizedType.getActualTypeArguments();
             return generateParametrized(rawClass, argumentsTypes, ctx);
         }
@@ -125,7 +125,7 @@ public class Generator {
         }
 
         if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
-            generateAbstractOrInterface(clazz, typeAnnotation, ctx);
+            return generateAbstractOrInterface(clazz, typeAnnotation, ctx);
         }
 
         return instancePojo(clazz, ctx);
@@ -240,7 +240,10 @@ public class Generator {
                 throw new IllegalArgumentException("Primal constructor может быть только один");
             } else if (primalConstructors.length == 1) {
                 targetConstructor = primalConstructors[0];
-            } else {
+            } else if (targetConstructors.length == 0) {
+                targetConstructor = constructors.length > 1 ? constructors[RANDOM.nextInt(constructors.length)] : constructors[0];
+            }
+            else {
                 targetConstructor = targetConstructors.length > 1 ? targetConstructors[RANDOM.nextInt(targetConstructors.length)] : targetConstructors[0];
             }
 
@@ -279,6 +282,4 @@ public class Generator {
             current = current.getSuperclass();
         }
     }
-
-
 }
